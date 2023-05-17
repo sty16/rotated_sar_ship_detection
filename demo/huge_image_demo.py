@@ -14,6 +14,7 @@ python demo/huge_image_demo.py \
 from argparse import ArgumentParser
 
 from mmdet.apis import init_detector, show_result_pyplot
+import math
 
 from mmrotate.apis import inference_detector_by_patches
 
@@ -27,13 +28,13 @@ def parse_args():
         '--patch_sizes',
         type=int,
         nargs='+',
-        default=[1024],
+        default=[612],
         help='The sizes of patches')
     parser.add_argument(
         '--patch_steps',
         type=int,
         nargs='+',
-        default=[824],
+        default=[611],
         help='The steps between two patches')
     parser.add_argument(
         '--img_ratios',
@@ -44,17 +45,17 @@ def parse_args():
     parser.add_argument(
         '--merge_iou_thr',
         type=float,
-        default=0.1,
+        default=0.001,
         help='IoU threshould for merging results')
     parser.add_argument(
         '--device', default='cuda:0', help='Device used for inference')
     parser.add_argument(
         '--palette',
-        default='dota',
+        default='sar',
         choices=['dota', 'sar', 'hrsc', 'hrsc_classwise', 'random'],
         help='Color palette used for visualization')
     parser.add_argument(
-        '--score-thr', type=float, default=0.3, help='bbox score threshold')
+        '--score-thr', type=float, default=0.5, help='bbox score threshold')
     args = parser.parse_args()
     return args
 
@@ -66,13 +67,16 @@ def main(args):
     result = inference_detector_by_patches(model, args.img, args.patch_sizes,
                                            args.patch_steps, args.img_ratios,
                                            args.merge_iou_thr)
+    for res in result:
+        res[:, 4] -= math.pi / 2
     # show the results
     show_result_pyplot(
         model,
         args.img,
         result,
         palette=args.palette,
-        score_thr=args.score_thr)
+        score_thr=args.score_thr,
+        out_file='res3.jpg')
 
 
 if __name__ == '__main__':

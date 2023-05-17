@@ -183,7 +183,7 @@ def imshow_det_rbboxes(img,
             positions,
             scores=scores,
             class_names=class_names,
-            color=text_colors,
+            color='yellow',
             font_size=font_size,
             scales=scales,
             horizontal_alignment=horizontal_alignment)
@@ -191,6 +191,7 @@ def imshow_det_rbboxes(img,
     if segms is not None:
         mask_palette = get_palette(mask_color, max_label + 1)
         colors = [mask_palette[label] for label in labels]
+        colors = ['green']
         colors = np.array(colors, dtype=np.uint8)
         draw_masks(ax, img, segms, colors, with_edge=True)
 

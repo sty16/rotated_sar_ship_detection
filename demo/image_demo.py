@@ -2,6 +2,7 @@
 from argparse import ArgumentParser
 
 from mmdet.apis import inference_detector, init_detector, show_result_pyplot
+import math
 
 import mmrotate  # noqa: F401
 
@@ -16,7 +17,7 @@ def parse_args():
         '--device', default='cuda:0', help='Device used for inference')
     parser.add_argument(
         '--palette',
-        default='dota',
+        default='sar',
         choices=['dota', 'sar', 'hrsc', 'hrsc_classwise', 'random'],
         help='Color palette used for visualization')
     parser.add_argument(
@@ -30,6 +31,11 @@ def main(args):
     model = init_detector(args.config, args.checkpoint, device=args.device)
     # test a single image
     result = inference_detector(model, args.img)
+    print(result)
+    # result[0][0][4] -= math.pi / 2
+    for res in result:
+        res[:, 4] -= math.pi / 2
+    # print(result[0][0][4])
     # show the results
     show_result_pyplot(
         model,
@@ -37,7 +43,7 @@ def main(args):
         result,
         palette=args.palette,
         score_thr=args.score_thr,
-        out_file=args.out_file)
+        out_file='res.jpg')
 
 
 if __name__ == '__main__':

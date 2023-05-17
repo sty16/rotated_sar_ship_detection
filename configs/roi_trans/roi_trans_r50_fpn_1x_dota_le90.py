@@ -1,9 +1,10 @@
 _base_ = [
-    '../_base_/datasets/dotav1.py', '../_base_/schedules/schedule_1x.py',
+    '../_base_/datasets/rsd.py', '../_base_/schedules/schedule_1x.py',
     '../_base_/default_runtime.py'
 ]
 
 angle_version = 'le90'
+# angle_version = 'oc'
 model = dict(
     type='RoITransformer',
     backbone=dict(
@@ -11,7 +12,7 @@ model = dict(
         depth=50,
         num_stages=4,
         out_indices=(0, 1, 2, 3),
-        frozen_stages=1,
+        # frozen_stages=1,
         norm_cfg=dict(type='BN', requires_grad=True),
         norm_eval=True,
         style='pytorch',
@@ -66,7 +67,7 @@ model = dict(
                 in_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=15,
+                num_classes=1,
                 bbox_coder=dict(
                     type='DeltaXYWHAHBBoxCoder',
                     angle_range=angle_version,
@@ -86,7 +87,7 @@ model = dict(
                 in_channels=256,
                 fc_out_channels=1024,
                 roi_feat_size=7,
-                num_classes=15,
+                num_classes=1,
                 bbox_coder=dict(
                     type='DeltaXYWHAOBBoxCoder',
                     angle_range=angle_version,
@@ -172,7 +173,7 @@ model = dict(
             nms_pre=2000,
             min_bbox_size=0,
             score_thr=0.05,
-            nms=dict(type=angle_version, iou_thr=0.1),
+            nms=dict(type=angle_version, iou_thr=0.05),
             max_per_img=2000)))
 
 img_norm_cfg = dict(
@@ -180,7 +181,7 @@ img_norm_cfg = dict(
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
-    dict(type='RResize', img_scale=(1024, 1024)),
+    dict(type='RResize', img_scale=(512, 512)),
     dict(
         type='RRandomFlip',
         flip_ratio=[0.25, 0.25, 0.25],
@@ -196,4 +197,3 @@ data = dict(
     val=dict(version=angle_version),
     test=dict(version=angle_version))
 
-optimizer = dict(lr=0.005)

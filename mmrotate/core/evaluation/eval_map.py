@@ -221,6 +221,16 @@ def eval_rbbox_map(det_results,
             'precision': precisions,
             'ap': ap
         })
+        f1_score = 0
+        opt_recall, opt_precision = 0, 0
+        for i in range(len(recalls)):
+            r = recalls[i]
+            p = precisions[i]
+            tmp = 2 * r * p / (r + p)
+            if tmp > f1_score:
+                f1_score, opt_recall, opt_precision = tmp, r, p
+        print(round(iou_thr, 2), round(opt_precision, 4), round(opt_recall, 4), round(f1_score, 4), round(np.mean(precisions), 4))
+
     pool.close()
     if scale_ranges is not None:
         # shape (num_classes, num_scales)

@@ -26,7 +26,7 @@ class RotatedRPNHead(AnchorHead):
     def __init__(self,
                  in_channels,
                  init_cfg=dict(type='Normal', layer='Conv2d', std=0.01),
-                 version='oc',
+                 version='le90',
                  **kwargs):
         self.version = version
         super(RotatedRPNHead, self).__init__(
